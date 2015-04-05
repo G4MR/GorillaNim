@@ -81,8 +81,7 @@ proc gau_manager_update*(in_mgr: ptr gau_Manager) {.cdecl,
 #   \ingroup gau_Manager
 # 
 
-proc gau_manager_mixer*(in_mgr: ptr gau_Manager): ptr ga_Mixer {.cdecl, 
-    importc: "gau_manager_mixer", dynlib: gorillalib.}
+proc gau_manager_mixer*(in_mgr: ptr gau_Manager): ptr ga_Mixer {.importc: "gau_manager_mixer", dynlib: gorillalib.}
 #* Retrieves the internal buffered stream manager object from an audio manager.
 # 
 #   \ingroup gau_Manager
