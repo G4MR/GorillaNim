@@ -840,6 +840,24 @@ const
   GA_TELL_PARAM_CURRENT* = 0
   GA_TELL_PARAM_TOTAL* = 1
 
+#* Prototype for handle-finished-playback callback.
+# 
+#   This callback will be called when the internal sampleSource ends. Stopping a handle
+#   does not generate this callback. Looping sample sources will never generate this
+#   callback.
+# 
+#   \ingroup ga_Handle
+#   \param in_finishedHandle The handle that has finished playback.
+#   \param in_context The user-specified callback context.
+#   \warning This callback is thrown once the handle has finished playback, 
+#            after which the handle can no longer be used except to destroy it.
+#   \todo Allow handles with GA_FLAG_SEEKABLE to be rewound/reused once finished.
+# 
+
+type 
+  ga_FinishCallback* = proc (in_finishedHandle: ptr ga_Handle; 
+                             in_context: pointer) {.cdecl.}
+
 #* Creates an audio playback control handle.
 # 
 #   The sample source is not playing by default. To start playback, you must

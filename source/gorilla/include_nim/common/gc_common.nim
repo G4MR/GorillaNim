@@ -46,8 +46,7 @@ type
     freeFunc*: proc (in_ptr: pointer) {.cdecl.}
 
 
-#var gcX_ops* {.importc: "gcX_ops", dynlib: gorillalib.}: ptr gc_SystemOps
-var gcX_ops* = gc_SystemOps()
+var gcX_ops* {.importc: "gcX_ops", dynlib: gorillalib.}: ptr gc_SystemOps
 
 #* Initialize the Gorilla library.
 # 
@@ -63,7 +62,7 @@ var gcX_ops* = gc_SystemOps()
 # 
 
 proc gc_initialize*(in_callbacks: ptr gc_SystemOps): gc_result {.cdecl, 
-    importc: "gc_initialize", dynlib: gorillalib, discardable.}
+    importc: "gc_initialize", dynlib: gorillalib.}
 #* Shutdown the Gorilla library.
 # 
 #   Call this once you are finished using the library. After calling it,
@@ -75,7 +74,7 @@ proc gc_initialize*(in_callbacks: ptr gc_SystemOps): gc_result {.cdecl,
 # 
 
 proc gc_shutdown*(): gc_result {.cdecl, importc: "gc_shutdown", 
-                                 dynlib: gorillalib, discardable.}
+                                 dynlib: gorillalib.}
 #*********************
 #*  Circular Buffer  *
 #*********************
@@ -531,8 +530,9 @@ type
 # 
 
 type 
-  ga_HandlePtr* = object of RootObj
+  ga_Handle* = object 
     mixer*: ptr ga_Mixer
+    callback*: ga_FinishCallback
     context*: pointer
     state*: int32
     gain*: float32
@@ -543,28 +543,6 @@ type
     handleMutex*: ptr gc_Mutex
     sampleSrc*: ptr ga_SampleSource
     finished*: int32
-
-#* Prototype for handle-finished-playback callback.
-# 
-#   This callback will be called when the internal sampleSource ends. Stopping a handle
-#   does not generate this callback. Looping sample sources will never generate this
-#   callback.
-# 
-#   \ingroup ga_Handle
-#   \param in_finishedHandle The handle that has finished playback.
-#   \param in_context The user-specified callback context.
-#   \warning This callback is thrown once the handle has finished playback, 
-#            after which the handle can no longer be used except to destroy it.
-#   \todo Allow handles with GA_FLAG_SEEKABLE to be rewound/reused once finished.
-# 
-
-type 
-  ga_FinishCallback* = proc (in_finishedHandle: ptr ga_HandlePtr; 
-                             in_context: pointer) {.cdecl.}
-
-type 
-  ga_Handle* = ref object of ga_HandlePtr
-    callback*: ga_FinishCallback
 
 
 #* Buffered-stream manager data structure [\ref SINGLE_CLIENT].
